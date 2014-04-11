@@ -5,13 +5,17 @@ var fs = require('fs');
 var request = require('request');
 
 var middleware = function(req, res) {
-  var pathname = url.parse(req.url).pathname;
-  res.type('application/json; charset=utf-8').sendfile('data'+pathname+'.json');
+  //var pathname = url.parse(req.url).pathname;
+  //res.type('application/json; charset=utf-8').sendfile('data'+pathname+'.json');
 };
 
 // api/weather/?ts=1397271600
 var weather = function(req, res) {
+
+
   function getSimpleWeather(weatherData) {
+
+
     var weatherId = weatherData[0].id;
     var simpleWeather = openWeatherToSimpleWeather(weatherId);
     return simpleWeatherTypes[simpleWeather];
@@ -52,28 +56,22 @@ var weather = function(req, res) {
     9: 'fog'
   }
 
-  console.log('url: ' + req.url);
-  // var pathname = url.parse(req.url).pathname;
   var pathname = req.url;
-  var ts = parseInt(req.query.ts);
+  var ts = req.url.split('/');
+  var city = ts[ts.length-2];
+  ts = parseInt(ts[ts.length-1]);
   var fileContents = '';
-  var city = 'helsinki';
-
+  
   var url = ['http://api.openweathermap.org/data/2.5/forecast?q=', city, '&mode=json&units=metric'].join('');
   request(url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      // console.log(body);
       fileContents = body;
 
       var data = JSON.parse(fileContents);
-      // var data = fileContents;
-
-
 
       var closest = { delta: Number.MAX_VALUE, weather: null};
       for (var idx in data.list) {
         var item = data.list[idx];
-        console.log(item);
         var delta = Math.abs(ts - item.dt);
         if (delta < closest.delta) {
           closest.delta = delta;
@@ -88,30 +86,11 @@ var weather = function(req, res) {
     }
   });
 
-  console.log(fileContents);
-  // var data = JSON.parse(fileContents);
-  var data = fileContents;
-  var closest = { delta: Number.MAX_VALUE, weather: null};
-  for (var idx in data.list) {
-    var item = data.list[idx];
-    //console.log("-----------------------------------asd")
-    //console.log(item);
-    var delta = Math.abs(ts - item.dt);
-    if (delta < closest.delta) {
-      //console.log("hei")
-      closest.delta = delta;
-      closest.weather = {
-        temp: item.main.temp,
-        weather: getSimpleWeather(item.weather)
-      }
-    }
-  };
-
 }
 
 
 var app = express()
-  .get('/api/weather/:ts', weather)
+  .get('/api/weather/:city/:ts', weather)
   .use('/api', middleware)
   .use('/public', express.static(__dirname + '/public'));
 
