@@ -11,14 +11,16 @@ var middleware = function(req, res) {
 // api/weather/?ts=1397271600
 var weather = function(req, res) {
   function getSimpleWeather(weatherData) {
-    return "SUPER FUCKING HOT";
+    var weatherId = weatherData[0].id;
+    var simpleWeather = openWeatherToSimpleWeather(weatherId);
+    return simpleWeatherTypes[simpleWeather];
   }
 
   function openWeatherToSimpleWeather(weatherId) {
     var simpleWeather;
     if((weatherId >= 200 && weatherId < 300) || (weatherId >= 900 && weatherId <= 902) || (weatherId >= 957 && weatherId <= 962))
       simpleWeather = 7;
-    else if(weatherId >= 300 && weatherId < 500)
+    else if(weatherId >= 300 && weatherId <= 500)
       simpleWeather = 4;
     else if(weatherId == 501 || weatherId == 502)
       simpleWeather = 5;
@@ -38,29 +40,31 @@ var weather = function(req, res) {
   }
 
   var simpleWeatherTypes = {
-    1: 'sunny'
-    2: 'parly cloudy'
-    3: 'cloudy'
-    4: 'light rain'
-    5: 'rain'
-    6: 'heavy rain'
-    7: 'storm'
-    8: 'snow'
+    1: 'sunny',
+    2: 'parly cloudy',
+    3: 'cloudy',
+    4: 'light rain',
+    5: 'rain',
+    6: 'heavy rain',
+    7: 'storm',
+    8: 'snow',
     9: 'fog'
   }
 
   var pathname = url.parse(req.url).pathname;
   var ts = parseInt(req.param('ts'));
-  var fileContents = fs.readFileSync('/Users/jw/work/festapp-server/data/weather_celsius.json');
+  var fileContents = fs.readFileSync('data/weather_celsius.json');
 
-  console.log(fileContents);
+  //console.log(fileContents);
   var data = JSON.parse(fileContents);
   var closest = { delta: Number.MAX_VALUE, weather: null};
   for (var idx in data.list) {
     var item = data.list[idx];
-    console.log(item);
+    //console.log("-----------------------------------asd")
+    //console.log(item);
     var delta = Math.abs(ts - item.dt);
     if (delta < closest.delta) {
+      //console.log("hei")
       closest.delta = delta;
       closest.weather = {
         temp: item.main.temp,
