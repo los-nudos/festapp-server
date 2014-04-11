@@ -2,6 +2,7 @@ var express = require('express');
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
+var request = require('request');
 
 var middleware = function(req, res) {
   var pathname = url.parse(req.url).pathname;
@@ -51,12 +52,27 @@ var weather = function(req, res) {
     9: 'fog'
   }
 
-  var pathname = url.parse(req.url).pathname;
-  var ts = parseInt(req.param('ts'));
-  var fileContents = fs.readFileSync('data/weather_celsius.json');
+  console.log('url: ' + req.url);
+  // var pathname = url.parse(req.url).pathname;
+  var pathname = req.url;
+  console.log('ts: ' + req.query.ts);
+  var ts = parseInt(req.query.ts);
+  // var fileContents = fs.readFileSync('/Users/jw/work/festapp-server/data/weather_celsius.json');
+  var fileContents = '';
+  var city = 'helsinki';
+  console.log('before request');
 
-  //console.log(fileContents);
-  var data = JSON.parse(fileContents);
+  var url = ['http://api.openweathermap.org/data/2.5/forecast?q=', city, '&mode=json&units=metric'].join('');
+  request(url, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      console.log(body) // Print the google web page.
+      fileContents = body;
+    }
+  })
+
+  console.log(fileContents);
+  // var data = JSON.parse(fileContents);
+  var data = fileContents;
   var closest = { delta: Number.MAX_VALUE, weather: null};
   for (var idx in data.list) {
     var item = data.list[idx];
