@@ -13,6 +13,42 @@ var weather = function(req, res) {
   function getSimpleWeather(weatherData) {
     return "SUPER FUCKING HOT";
   }
+
+  function openWeatherToSimpleWeather(weatherId) {
+    var simpleWeather;
+    if((weatherId >= 200 && weatherId < 300) || (weatherId >= 900 && weatherId <= 902) || (weatherId >= 957 && weatherId <= 962))
+      simpleWeather = 7;
+    else if(weatherId >= 300 && weatherId < 500)
+      simpleWeather = 4;
+    else if(weatherId == 501 || weatherId == 502)
+      simpleWeather = 5;
+    else if(weatherId >= 502 && weatherId <= 522)
+      simpleWeather = 6;
+    else if(weatherId >= 600 && weatherId <= 621)
+      simpleWeather = 8;
+    else if(weatherId >= 701 && weatherId <= 741)
+      simpleWeather = 9;
+    else if(weatherId == 800)
+      simpleWeather = 1;
+    else if(weatherId == 801 || weatherId == 802)
+      simpleWeather = 2;
+    else if(weatherId == 803 || weatherId == 804)
+      simpleWeather = 3;
+    return simpleWeather;
+  }
+
+  var simpleWeatherTypes = {
+    1: 'sunny'
+    2: 'parly cloudy'
+    3: 'cloudy'
+    4: 'light rain'
+    5: 'rain'
+    6: 'heavy rain'
+    7: 'storm'
+    8: 'snow'
+    9: 'fog'
+  }
+
   var pathname = url.parse(req.url).pathname;
   var ts = parseInt(req.param('ts'));
   var fileContents = fs.readFileSync('/Users/jw/work/festapp-server/data/weather_celsius.json');
