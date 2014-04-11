@@ -55,20 +55,38 @@ var weather = function(req, res) {
   console.log('url: ' + req.url);
   // var pathname = url.parse(req.url).pathname;
   var pathname = req.url;
-  console.log('ts: ' + req.query.ts);
   var ts = parseInt(req.query.ts);
-  // var fileContents = fs.readFileSync('/Users/jw/work/festapp-server/data/weather_celsius.json');
   var fileContents = '';
   var city = 'helsinki';
-  console.log('before request');
 
   var url = ['http://api.openweathermap.org/data/2.5/forecast?q=', city, '&mode=json&units=metric'].join('');
   request(url, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      console.log(body) // Print the google web page.
+      // console.log(body);
       fileContents = body;
+
+      var data = JSON.parse(fileContents);
+      // var data = fileContents;
+
+
+
+      var closest = { delta: Number.MAX_VALUE, weather: null};
+      for (var idx in data.list) {
+        var item = data.list[idx];
+        console.log(item);
+        var delta = Math.abs(ts - item.dt);
+        if (delta < closest.delta) {
+          closest.delta = delta;
+          closest.weather = {
+            temp: item.main.temp,
+            weather: getSimpleWeather(item.weather)
+          }
+        }
+      };
+
+      res.type('application/json; charset=utf-8').end(JSON.stringify(closest.weather));
     }
-  })
+  });
 
   console.log(fileContents);
   // var data = JSON.parse(fileContents);
@@ -89,7 +107,6 @@ var weather = function(req, res) {
     }
   };
 
-  res.type('application/json; charset=utf-8').end(JSON.stringify(closest.weather));
 }
 
 
