@@ -14,7 +14,7 @@ var weather = function(req, res) {
     return "SUPER FUCKING HOT";
   }
   var pathname = url.parse(req.url).pathname;
-  var ts = parseInt(req.query.ts);
+  var ts = parseInt(req.param('ts'));
   var fileContents = fs.readFileSync('/Users/jw/work/festapp-server/data/weather_celsius.json');
 
   console.log(fileContents);
@@ -38,7 +38,7 @@ var weather = function(req, res) {
 
 
 var app = express()
-  .use('/api/weather', weather)
+  .get('/api/weather/:ts', weather)
   .use('/api', middleware)
   .use('/public', express.static(__dirname + '/public'));
 
