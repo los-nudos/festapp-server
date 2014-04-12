@@ -11,11 +11,34 @@ var middleware = function(req, res) {
 };
 
 
-var app = express()
-  .get('/api/weather/:city/:ts', weather.weather)
-  .use('/api', middleware)
-  .use('/public', express.static(__dirname + '/public'));
+// var url = require('url');
+var restify = require('express-restify-mongoose');
+var mongoose = require('mongoose');
 
+var Artist = require('./api/models/artist');
+var Faq = require('./api/models/faq');
+var News = require('./api/models/news');
+var Program = require('./api/models/program');
+var Stage = require('./api/models/stage');
+
+var mongourl = process.env.MONGOLAB_URI || 'mongodb://localhost/festapp-dev';
+mongoose.connect(mongourl);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+  console.log('Yay');
+});
+
+var app = express();
+app.get('/api/weather/:city/:ts', weather.weather);
+app.use('/api', middleware);
+app.use('/public', express.static(__dirname + '/public'));
+
+restify.serve(app, Artist);
+restify.serve(app, Faq);
+restify.serve(app, News);
+restify.serve(app, Program);
+restify.serve(app, Stage);
 
 var port = Number(process.env.PORT || 8080);
 http.createServer(app).listen(port);
