@@ -30,7 +30,7 @@ db.once('open', function callback () {
 });
 
 var app = express();
-app.get('/api/weather/:city/:ts', weather.weather);
+app.get('/api/weather/:city/:ts?', weather.weather);
 app.use('/api', middleware);
 app.use('/public', express.static(__dirname + '/public'));
 
