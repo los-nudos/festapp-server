@@ -172,5 +172,16 @@ IGCLIENTSECRET = Instagram Client Secret
 IGHASHTAG = Instagram hashtag used for search
 IGUSERID = Instagram userid used for search
 
-* `GET /api/instagram/tag`
-* `GET /api/instagram/user`
+* `GET /api/v1/instagram/tag`
+* `GET /api/v1/instagram/user`
+
+### Flickr API
+Environment variables for configuration
+
+FLICKRAPIKEY = Flickr API key
+FLICKRHASHTAG = Flickr hashtag used for search
+FLICKRUSERID = Flickr userid used for search
+[FLICKRPERPAGE] = Flickr feed size, default: 20
+
+* `GET /api/v1/flickr/tag`
+* `GET /api/v1/flickr/user`
