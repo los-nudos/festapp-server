@@ -163,25 +163,3 @@ Append `lang=<lang>` to the request, f.ex. `/api/v1/artists?lang=fi`
 ### Localisation API
 * `GET /api/v1/localisation/:key` (`key` is of format <fieldname>-<value>-<lang>)
 * `POST /api/v1/localisation/` (Accepts JSON in the form `{ 'key' : <key>, 'val' : <value>}`)
-
-### Instagram API
-Need environment variables for configuration
-
-*IGCLIENTID = Instagram Client Id
-*IGCLIENTSECRET = Instagram Client Secret
-*IGHASHTAG = Instagram hashtag used for search
-*IGUSERID = Instagram userid used for search
-
-* `GET /api/v1/instagram/tag`
-* `GET /api/v1/instagram/user`
-
-### Flickr API
-Environment variables for configuration
-
-*FLICKRAPIKEY = Flickr API key
-*FLICKRHASHTAG = Flickr hashtag used for search
-*FLICKRUSERID = Flickr userid used for search
-*[FLICKRPERPAGE] = Flickr feed size, default: 20
-
-* `GET /api/v1/flickr/tag`
-* `GET /api/v1/flickr/user`
